@@ -4,6 +4,9 @@ import Glibc
 import Darwin
 #endif
 
+//
+// library versions. may not agree with Complex.func(x+0.0.i).real
+//
 extension FloatingPointMath {
     #if os(Linux)
     public static func erf   (_ x:Self)->Self { return Self(Glibc.erf  (x.asDouble)) }
@@ -17,7 +20,6 @@ extension FloatingPointMath {
     public static func tgamma(_ x:Self)->Self { return Self(Darwin.tgamma(x.asDouble)) }
     #endif
 }
-
 extension Double {
     #if os(Linux)
     public static func erf  (_ x:Double)->Double { return Glibc.erf(x) }
@@ -64,11 +66,7 @@ extension PONS {
 }
 
 extension ComplexFloat where Element == BigRat {
-    /// Γ(x)
-    public static func tgamma(_ x:Self, precision px:Int = 64)->Self   {
-        return exp(lgamma(x, precision:px*2), precision:px)
-    }
-    //
+     //
     // cf. http://algolist.manual.ru/maths/count_fast/gamma_function.php
     //
     /// lnΓ(x)
@@ -98,10 +96,10 @@ extension ComplexFloat where Element == BigRat {
         r += +log(2*pi, precision:px*2)/2
         r += -log(v, precision:px*2)
         if debug { print(0, 0, (r.real.asDouble, r.imag.asDouble)) }
-        let epsilon = Element(BigInt(1)) / Element(BigInt(1) << px.magnitude * 2)
+        let epsilon = Element(BigInt(1)) / Element(BigInt(1) << px.magnitude)
         let x2 = u * u
         var d = u
-        for i in 1...px.magnitude*2 {
+        for i in 1...px.magnitude * 2 {
             if i & 1 == 1 { continue }
             let n = Self(PONS.bernoulliNumber(Int(i)) / BigRat(i * (i-1)))
             if debug { print(i, n, (r.real.asDouble, r.imag.asDouble)) }
@@ -113,6 +111,10 @@ extension ComplexFloat where Element == BigRat {
             d.truncate(width:px*2)
         }
         return px < 0 ? r : r.truncated(width: px)
+    }
+    /// Γ(x)
+    public static func tgamma(_ z:Self, precision px:Int = 64)->Self   {
+        return exp(lgamma(z, precision:px*2), precision:px*2)
     }
 }
 
@@ -126,20 +128,30 @@ extension ComplexFloat where Element == Double {
 }
 
 extension RationalType {
-    /// Γ(x)
-    public static func tgamma(_ x:Self, precision px:Int = 64)->Self   {
-        return exp(lgamma(x, precision:px*2), precision:px)
-    }
-    //
-    // cf. http://algolist.manual.ru/maths/count_fast/gamma_function.php
-    //
     /// lnΓ(x)
     public static func lgamma(_ x:Self, precision px:Int = 64, debug:Bool = false)->Self   {
         if x.isNaN      { return nan }
         if x.isZero     { return 1/x }
         if x.isInfinite { return +infinity }
         if x == 1       { return 0 }
+        if let u = x as? BigRat {
+            let (ix, fx) = u.asMixed
+            if fx.isZero && 0 < ix {
+                print("\(Self.self).lgamma: Γ(\(ix)) = (\(ix) - 1)!")
+                return log(tgamma(Self(ix), debug:debug), precision:px)
+            }
+        }
         return Self(Complex.lgamma(x.asBigRat + BigRat(0.0).i, precision:px, debug:debug).real)
     }
+    /// Γ(x)
+    public static func tgamma(_ x:Self, precision px:Int = 64, debug:Bool = false)->Self   {
+        if let u = x as? BigRat {
+            let (ix, fx) = u.asMixed
+            if fx.isZero && 0 < ix {
+                print("\(#line): Γ(\(ix)) = (\(ix) - 1)!")
+                return Self(PONS.factorial(Int(ix) - 1))
+            }
+        }
+        return exp(lgamma(x, precision:px*2, debug:debug), precision:px*2)
+    }
 }
-
