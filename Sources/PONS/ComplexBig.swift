@@ -1,5 +1,26 @@
-/// Same functions as `Complex`, but with precision arguments
+///
+extension ComplexFloat where Element == Double {
+    public init(_ cq:Complex<BigRat>) {
+        self.init(cq.real.asDouble, cq.imag.asDouble)
+    }
+}
 extension ComplexFloat where Element == BigRat {
+    public init(_ cq:Complex<Double>) {
+        self.init(cq.real.asBigRat, cq.imag.asBigRat)
+    }
+}
+
+/// Same functions as `Complex`, but with precision arguments
+
+extension ComplexFloat where Element == BigRat {
+    /// truncated to `width` bytes
+    public func truncated(width: Int = 64)->Self {
+        return Self(real:real.truncated(width: width), imag:imag.truncated(width: width))
+    }
+    /// truncate `real` and `imag` to `width` bytes
+    public mutating func truncate(width: Int = 64) {
+        self = self.truncated(width: width)
+    }
     /// hypotenuse. defined as √(lhs**2 + rhs**2) though its need for Complex is moot.
     public static func hypot(_ lhs:Self, _ rhs:Self, precision px:Int = 64) -> Self {
         return sqrt(lhs*lhs + rhs*rhs, precision:px)
@@ -7,9 +28,9 @@ extension ComplexFloat where Element == BigRat {
     public static func hypot(_ lhs:Self, _ rhs:Element, precision px:Int = 64)->Self { return hypot(lhs, Self(rhs)) }
     public static func hypot(_ lhs:Element, _ rhs:Self, precision px:Int = 64)->Self { return hypot(Self(lhs), rhs) }
     public static func hypot(_ lhs:Element, _ rhs:Element, precision px:Int = 64)->Self { return Self(Element.hypot(lhs, rhs)) }
-    /// atan2 = atan(lhs/rhs)
+    /// atan2
     public static func atan2(_ lhs:Self, _ rhs:Self, precision px:Int = 64) -> Self {
-        return atan(lhs/rhs, precision:px)
+        return atan2(lhs, rhs, precision:px)
     }
     public static func atan2(_ lhs:Self, _ rhs:Element, precision px:Int = 64)->Self { return atan(lhs/rhs, precision:px) }
     public static func atan2(_ lhs:Element, _ rhs:Self, precision px:Int = 64)->Self { return atan(lhs/rhs, precision:px) }
@@ -18,9 +39,13 @@ extension ComplexFloat where Element == BigRat {
     public func abs(precision px:Int = 64)->Element {
         return Element.hypot(real, imag, precision:px)
     }
+    // magnitude = abs
+    public var magnitude:Element {
+        return self.abs
+    }
     /// argument to `precision`
     public func arg(precision px:Int = 64)->Element {
-        return Element.atan(real/imag, precision:px)
+        return Element.atan2(imag, real, precision:px)
     }
     /// square root of z in Complex
     public static func sqrt(_ z:Self, precision px:Int = 64) -> Self {
@@ -45,7 +70,7 @@ extension ComplexFloat where Element == BigRat {
     public static func expm1(_ x:Element, precision px:Int = 64)->Self { return Self(Element.expm1(x, precision:px)) }
      /// natural log of z in Complex
     public static func log(_ z:Self, precision px:Int = 64)->Self {
-        return Self(Element.log(z.abs, precision:px), z.arg(precision:px))
+        return Self(Element.log(z.abs(precision:px), precision:px), z.arg(precision:px))
     }
     public static func log(_ x:Element, precision px:Int = 64)->Self { return log(Self(x), precision:px) }
     /// natural log of (z + 1) in Complex
@@ -142,4 +167,4 @@ extension ComplexFloat where Element == BigRat {
         return (log(1 + z, precision:px) - log(1 - z, precision:px)) / 2
     }
     public static func atanh(_ x:Element, precision px:Int = 64) -> Self { return atanh(Self(x), precision:px) }
-}
+ }
