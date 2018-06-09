@@ -37,7 +37,7 @@ extension ComplexFloat where Element == BigRat {
     public static func atan2(_ lhs:Element, _ rhs:Element, precision px:Int = 64)->Self { return atan(lhs/rhs, precision:px) }
     /// absolute value of `self` to `precision`
     public func abs(precision px:Int = 64)->Element {
-        return Element.hypot(real, imag, precision:px)
+        return imag.isZero ? real : Element.hypot(real, imag, precision:px)
     }
     // magnitude = abs
     public var magnitude:Element {
@@ -45,7 +45,7 @@ extension ComplexFloat where Element == BigRat {
     }
     /// argument to `precision`
     public func arg(precision px:Int = 64)->Element {
-        return Element.atan2(imag, real, precision:px)
+        return imag.isZero ? real : Element.atan2(imag, real, precision:px)
     }
     /// square root of z in Complex
     public static func sqrt(_ z:Self, precision px:Int = 64) -> Self {

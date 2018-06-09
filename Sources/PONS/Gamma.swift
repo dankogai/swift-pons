@@ -77,36 +77,37 @@ extension ComplexFloat where Element == BigRat {
         if z == Self(1) || z == Self(2)      { return Self(0) }
         let pi = Element.PI(precision:px*2)
         if z.real.sign == .minus {
-            let lgmx  = lgamma(-z, precision:px*2, debug:debug)
+            let lgmx  = lgamma(-z, precision:px, debug:debug)
             if debug { print("lgamma(\(-z)) =", lgmx) }
-            let sinpi = sin(pi * -z, precision:px*2)
-            let r = log(pi, precision:px*2) - log(-z, precision:px*2)
+            let sinpi = sin(pi * -z, precision:px)
+            let r = log(pi, precision:px) - log(-z, precision:px)
                 - lgmx
-                - log(sinpi, precision:px*2)
+                - log(sinpi, precision:px)
             return px < 0 ? r : r.truncated(width: px)
         }
-        let bias = Element(8)
+        let bias = Element(16)
         var (u, v) = (z, Self(1))
         while u.real.magnitude < bias {
             v *= u; u += 1;
         }
-        if debug { print("(z, u, v) = ", z, u, v) }
-        var r = (u - 0.5) * log(u, precision:px*2)
+        if debug { print("(z, u, v) = ", z, u, v ) }
+        var r = (u - 0.5) * log(u, precision:px*4)
         r += -u
         r += +log(2*pi, precision:px*2)/2
         r += -log(v, precision:px*2)
+        if r.isZero || r.isInfinite { return px < 0 ? r : r.truncated(width: px) }
         if debug { print(0, 0, (r.real.asDouble, r.imag.asDouble)) }
         let epsilon = Element(BigInt(1)) / Element(BigInt(1) << px.magnitude)
         let x2 = u * u
         var d = u
-        for i in 1...px.magnitude * 2 {
+        for i in 1...px.magnitude {
             if i & 1 == 1 { continue }
             let n = Self(PONS.bernoulliNumber(Int(i)) / BigRat(i * (i-1)))
-            if debug { print(i, n, (r.real.asDouble, r.imag.asDouble)) }
             let t = n / d
-            r += t
-            r.truncate(width:px*2)
             if t.magnitude < epsilon { break }
+            r.truncate(width:px*2)
+            r += t
+            if debug { print(i, n, (r.real.asDouble, r.imag.asDouble)) }
             d *= x2
             d.truncate(width:px*2)
         }
@@ -114,6 +115,11 @@ extension ComplexFloat where Element == BigRat {
     }
     /// Γ(x)
     public static func tgamma(_ z:Self, precision px:Int = 64)->Self   {
+        if z.real < 0 {
+            let g1_z = exp(lgamma(1 - z, precision:px*2), precision:px*2)
+            let pi = Element.PI(precision: px)
+            return pi / (sin(pi * z, precision:px) * g1_z) // reflection formula
+        }
         return exp(lgamma(z, precision:px*2), precision:px*2)
     }
 }
@@ -136,8 +142,8 @@ extension RationalType {
         if x == 1       { return 0 }
         if let u = x as? BigRat {
             let (ix, fx) = u.asMixed
-            if fx.isZero && 0 < ix {
-                print("\(Self.self).lgamma: Γ(\(ix)) = (\(ix) - 1)!")
+            if fx.isZero && 0 < ix && ix < 256 {
+                if debug { print("\(Self.self).lgamma: lnΓ(\(ix)) = ln(\(ix) - 1)!") }
                 return log(tgamma(Self(ix), debug:debug), precision:px)
             }
         }
@@ -148,9 +154,14 @@ extension RationalType {
         if let u = x as? BigRat {
             let (ix, fx) = u.asMixed
             if fx.isZero && 0 < ix {
-                print("\(#line): Γ(\(ix)) = (\(ix) - 1)!")
+                if debug { print("\(#line).tgamma: Γ(\(ix)) = (\(ix) - 1)!") }
                 return Self(PONS.factorial(Int(ix) - 1))
             }
+        }
+        if x < 0 {
+            let g1_z = exp(lgamma(1 - x, precision:px*2), precision:px*2)
+            let pi = PI(precision: px)
+            return pi / (sin(pi * x, precision:px) * g1_z) // reflection formula
         }
         return exp(lgamma(x, precision:px*2, debug:debug), precision:px*2)
     }
