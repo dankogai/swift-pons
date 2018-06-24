@@ -12,7 +12,7 @@ extension ComplexFloat where Element == BigRat {
 
 /// Same functions as `Complex`, but with precision arguments
 
-extension ComplexFloat where Element == BigRat {
+extension ComplexFloat where Element:BigFloatingPoint {
     /// truncated to `width` bytes
     public func truncated(width: Int = 64)->Self {
         return Self(real:real.truncated(width: width), imag:imag.truncated(width: width))
@@ -20,6 +20,18 @@ extension ComplexFloat where Element == BigRat {
     /// truncate `real` and `imag` to `width` bytes
     public mutating func truncate(width: Int = 64) {
         self = self.truncated(width: width)
+    }
+    /// absolute value of `self` to `precision`
+    public func abs(precision px:Int = 64)->Element {
+        return imag.isZero ? real : Element.hypot(real, imag, precision:px)
+    }
+    // magnitude = abs
+    public var magnitude:Element {
+        return self.abs
+    }
+    /// argument to `precision`
+    public func arg(precision px:Int = 64)->Element {
+        return imag.isZero ? 0 < real ? 0 : -Element.PI(precision:px) : Element.atan2(imag, real, precision:px)
     }
     /// hypotenuse. defined as √(lhs**2 + rhs**2) though its need for Complex is moot.
     public static func hypot(_ lhs:Self, _ rhs:Self, precision px:Int = 64) -> Self {
@@ -35,18 +47,6 @@ extension ComplexFloat where Element == BigRat {
     public static func atan2(_ lhs:Self, _ rhs:Element, precision px:Int = 64)->Self { return atan(lhs/rhs, precision:px) }
     public static func atan2(_ lhs:Element, _ rhs:Self, precision px:Int = 64)->Self { return atan(lhs/rhs, precision:px) }
     public static func atan2(_ lhs:Element, _ rhs:Element, precision px:Int = 64)->Self { return atan(lhs/rhs, precision:px) }
-    /// absolute value of `self` to `precision`
-    public func abs(precision px:Int = 64)->Element {
-        return imag.isZero ? real : Element.hypot(real, imag, precision:px)
-    }
-    // magnitude = abs
-    public var magnitude:Element {
-        return self.abs
-    }
-    /// argument to `precision`
-    public func arg(precision px:Int = 64)->Element {
-        return imag.isZero ? real : Element.atan2(imag, real, precision:px)
-    }
     /// square root of z in Complex
     public static func sqrt(_ z:Self, precision px:Int = 64) -> Self {
         let a = z.abs

@@ -65,7 +65,7 @@ extension PONS {
     }
 }
 
-extension ComplexFloat where Element == BigRat {
+extension ComplexFloat where Element:BigFloatingPoint {
      //
     // cf. http://algolist.manual.ru/maths/count_fast/gamma_function.php
     //
@@ -79,19 +79,19 @@ extension ComplexFloat where Element == BigRat {
         if z.real.sign == .minus {
             let lgmx  = lgamma(-z, precision:px, debug:debug)
             if debug { print("lgamma(\(-z)) =", lgmx) }
-            let sinpi = sin(pi * -z, precision:px)
-            let r = log(pi, precision:px) - log(-z, precision:px)
+            let sinpi = sin(pi * -z, precision:px*2)
+            let r = log(pi, precision:px) - log(-z, precision:px*2)
                 - lgmx
                 - log(sinpi, precision:px)
             return px < 0 ? r : r.truncated(width: px)
         }
         let bias = Element(16)
         var (u, v) = (z, Self(1))
-        while u.real.magnitude < bias {
+        while u.real < bias {
             v *= u; u += 1;
         }
         if debug { print("(z, u, v) = ", z, u, v ) }
-        var r = (u - 0.5) * log(u, precision:px*4)
+        var r = (u - 0.5) * log(u, precision:px*2)
         r += -u
         r += +log(2*pi, precision:px*2)/2
         r += -log(v, precision:px*2)
@@ -102,20 +102,18 @@ extension ComplexFloat where Element == BigRat {
         var d = u
         for i in 1...px.magnitude {
             if i & 1 == 1 { continue }
-            let n = Self(PONS.bernoulliNumber(Int(i)) / BigRat(i * (i-1)))
-            let t = n / d
+            let n = PONS.bernoulliNumber(Int(i)) / BigRat(i * (i-1))
+            let t = Self(Element(n), 0) / d
             if t.magnitude < epsilon { break }
-            r.truncate(width:px*2)
-            r += t
+            r = (r + t).truncated(width: px)
             if debug { print(i, n, (r.real.asDouble, r.imag.asDouble)) }
-            d *= x2
-            d.truncate(width:px*2)
+            d = (d * x2).truncated(width: px)
         }
         return px < 0 ? r : r.truncated(width: px)
     }
     /// Γ(x)
     public static func tgamma(_ z:Self, precision px:Int = 64)->Self   {
-        if z.real < 0 {
+        if z.real < Element(0) {
             let g1_z = exp(lgamma(1 - z, precision:px*2), precision:px*2)
             let pi = Element.PI(precision: px)
             return pi / (sin(pi * z, precision:px) * g1_z) // reflection formula
@@ -123,6 +121,7 @@ extension ComplexFloat where Element == BigRat {
         return exp(lgamma(z, precision:px*2), precision:px*2)
     }
 }
+
 
 extension ComplexFloat where Element == Double {
     public static func tgamma(_ z:Self)->Self {
@@ -133,32 +132,29 @@ extension ComplexFloat where Element == Double {
     }
 }
 
-extension RationalType {
+extension BigFloatingPoint  {
     /// lnΓ(x)
     public static func lgamma(_ x:Self, precision px:Int = 64, debug:Bool = false)->Self   {
         if x.isNaN      { return nan }
         if x.isZero     { return 1/x }
         if x.isInfinite { return +infinity }
-        if x == 1       { return 0 }
-        if let u = x as? BigRat {
-            let (ix, fx) = u.asMixed
-            if fx.isZero && 0 < ix && ix < 256 {
-                if debug { print("\(Self.self).lgamma: lnΓ(\(ix)) = ln(\(ix) - 1)!") }
-                return log(tgamma(Self(ix), debug:debug), precision:px)
-            }
+        if x == Self(1)       { return 0 }
+        let (ix, fx) = x.asMixed
+        if fx.isZero && 0 < ix && ix < 256 {
+            if debug { print("\(Self.self).lgamma: lnΓ(\(ix)) = ln(\(ix) - 1)!") }
+            return log(tgamma(Self(ix), debug:debug), precision:px)
         }
-        return Self(Complex.lgamma(x.asBigRat + BigRat(0.0).i, precision:px, debug:debug).real)
+        let result =  Complex<BigRat>.lgamma(x.asBigRat + BigRat(0.0).i, precision:px, debug:debug).real
+        return Self(result)
     }
     /// Γ(x)
     public static func tgamma(_ x:Self, precision px:Int = 64, debug:Bool = false)->Self   {
-        if let u = x as? BigRat {
-            let (ix, fx) = u.asMixed
-            if fx.isZero && 0 < ix {
-                if debug { print("\(#line).tgamma: Γ(\(ix)) = (\(ix) - 1)!") }
-                return Self(PONS.factorial(Int(ix) - 1))
-            }
+        let (ix, fx) = x.asMixed
+        if fx.isZero && 0 < ix {
+            if debug { print("\(#line).tgamma: Γ(\(ix)) = (\(ix) - 1)!") }
+            return Self(PONS.factorial(Int(ix) - 1))
         }
-        if x < 0 {
+        if x < Self(0) {
             let g1_z = exp(lgamma(1 - x, precision:px*2), precision:px*2)
             let pi = PI(precision: px)
             return pi / (sin(pi * x, precision:px) * g1_z) // reflection formula
@@ -166,3 +162,4 @@ extension RationalType {
         return exp(lgamma(x, precision:px*2, debug:debug), precision:px*2)
     }
 }
+
