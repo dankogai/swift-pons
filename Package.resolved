@@ -1,0 +1,70 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "BigInt",
+        "repositoryURL": "https://github.com/attaswift/BigInt.git",
+        "state": {
+          "branch": null,
+          "revision": "018a5925f60f9e0523edd261de394a0898fe95b7",
+          "version": "3.1.0"
+        }
+      },
+      {
+        "package": "SipHash",
+        "repositoryURL": "https://github.com/attaswift/SipHash",
+        "state": {
+          "branch": null,
+          "revision": "e325083424688055363bbfcb7f1a440d7d7a1bae",
+          "version": "1.2.2"
+        }
+      },
+      {
+        "package": "BigNum",
+        "repositoryURL": "https://github.com/dankogai/swift-bignum.git",
+        "state": {
+          "branch": "master",
+          "revision": "e995282385f97c58da30458036bfc9bc531b085d",
+          "version": null
+        }
+      },
+      {
+        "package": "Complex",
+        "repositoryURL": "https://github.com/dankogai/swift-complex.git",
+        "state": {
+          "branch": "master",
+          "revision": "476a9063fbd10548a13fad38c416817da63253cd",
+          "version": null
+        }
+      },
+      {
+        "package": "FloatingPointMath",
+        "repositoryURL": "https://github.com/dankogai/swift-floatingpointmath.git",
+        "state": {
+          "branch": "master",
+          "revision": "76db28ce8ea4cd0f70ee31ee2bbfee8c5d578892",
+          "version": null
+        }
+      },
+      {
+        "package": "Int2X",
+        "repositoryURL": "https://github.com/dankogai/swift-int2x.git",
+        "state": {
+          "branch": "master",
+          "revision": "9b9ce378d89be659f559576c2dd51e559a8f1e04",
+          "version": null
+        }
+      },
+      {
+        "package": "Interval",
+        "repositoryURL": "https://github.com/dankogai/swift-interval.git",
+        "state": {
+          "branch": "master",
+          "revision": "a8ea164dfe683d21086b2b6680256e9b1a1a4220",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}

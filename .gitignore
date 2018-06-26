@@ -39,6 +39,9 @@ playground.xcworkspace
 # Package.pins
 # Package.resolved
 .build/
+.attic/
+# .xcodeproj is ignored. use `swift package generate-xcodeproj`
+*.xcodeproj
 
 # CocoaPods
 #
