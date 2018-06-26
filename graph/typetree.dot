@@ -1,0 +1,119 @@
+digraph typetree {
+  node [
+    shape = box
+    style = "filled, rounded"
+    peripheries = 0
+    fontname = "San Francisco"
+    fontcolor = white
+    fillcolor = "#aaaaaa"
+  ]
+  edge [
+     color = "#aaaaaa"
+  ]
+  node [ fillcolor = gray style = "filled, rounded"]
+  Equitable Hashable Comparable
+  Numeric BinaryInteger FixedWidthInteger
+  SignedNumeric SignedInteger UnsignedNumeric UnsignedInteger
+  FloatingPoint BinaryFloatingPoint
+  node [ fillcolor = gray style = "filled"]
+  Int64 Int32 Int16 Int8 Int UInt64 UInt32 UInt16 UInt8 UInt
+  Double Float Float80
+  node [ fillcolor = "#00aa00" style = "filled, rounded"]
+  Rational ComplexNumeric BigFloatingPoint
+  node [ fillcolor = "#0000aa" style="filled"]
+  BigUInt BigInt BigFloat BigRat Int2X UInt2X
+  node [ fillcolor = "#aa0000" style="filled"]
+  GaussianInt Complex Rational Interval
+
+  BigFloat -> Complex [ color = blue ]
+  BigFloat -> Interval[ color = blue ]
+  BigFloatingPoint -> BigFloat [ color = green ]
+  BigFloatingPoint -> BigRat [ color = green ]
+  BigInt -> BigFloat [ color = blue ]
+  BigInt -> BigRat [ color = blue ]
+  BigInt -> GaussianInt [ color = blue ]
+  BigRat -> Complex [ color = blue ]
+  BigRat -> Interval [ color = blue ]
+  BigUInt -> BigInt [ color = blue ]
+  BinaryFloatingPoint -> Double
+  BinaryFloatingPoint -> Float
+  BinaryFloatingPoint -> Float80
+  BinaryInteger -> FixedWidthInteger
+  BinaryInteger -> SignedInteger
+  BinaryInteger -> UnsignedInteger
+  Comparable -> BinaryInteger
+  Comparable -> FloatingPoint
+  ComplexNumeric -> Complex [ color = green ]
+  ComplexNumeric -> GaussianInt [ color = green ]
+  Double -> Complex
+  Double -> Interval
+  Equitable -> Comparable
+  Equitable -> Hashable
+  Equitable -> Numeric
+  FixedWidthInteger -> Int
+  FixedWidthInteger -> Int16
+  FixedWidthInteger -> Int2X
+  FixedWidthInteger -> Int32
+  FixedWidthInteger -> Int64
+  FixedWidthInteger -> Int8
+  FixedWidthInteger -> UInt
+  FixedWidthInteger -> UInt16
+  FixedWidthInteger -> UInt2X
+  FixedWidthInteger -> UInt32
+  FixedWidthInteger -> UInt64
+  FixedWidthInteger -> UInt8
+  Float -> Complex
+  Float -> Interval
+  Float80 -> Complex
+  Float80 -> Interval
+  FloatingPoint -> BigFloat
+  FloatingPoint -> BigFloatingPoint
+  FloatingPoint -> BinaryFloatingPoint
+  FloatingPoint -> Interval
+  FloatingPoint -> Rational
+  Hashable -> BinaryInteger
+  Hashable -> FloatingPoint
+  Hashable -> ComplexNumeric
+  Int -> GaussianInt
+  Int -> Rational
+  Int16 -> GaussianInt
+  Int16 -> Rational
+  Int2X -> GaussianInt [ color = blue ]
+  Int32 -> GaussianInt
+  Int32 -> Rational
+  Int64 -> GaussianInt
+  Int64 -> Rational
+  Int8  -> Rational
+  Int8 -> GaussianInt
+  Interval -> Complex [ color = red ]
+  Numeric -> BinaryInteger
+  Numeric -> ComplexNumeric
+  Numeric -> SignedNumeric
+  Numeric -> UnsignedNumeric
+  Rational -> BigRat [ color = green ]
+  SignedInteger -> BigInt
+  SignedInteger -> Int
+  SignedInteger -> Int16
+  SignedInteger -> Int2X
+  SignedInteger -> Int32
+  SignedInteger -> Int64
+  SignedNumeric -> FloatingPoint
+  SignedNumeric -> SignedInteger
+  UInt   -> Int2X
+  UInt16 -> Int2X
+  UInt16 -> UInt2X
+  UInt2X -> Int2X [ color = blue ]
+  UInt2X -> UInt2X [ color = blue ]
+  UInt64 -> Int2X
+  UInt64 -> UInt2X
+  UInt8  -> Int2X
+  UInt8  -> UInt2X
+  UnsignedInteger -> BigUInt
+  UnsignedInteger -> UInt
+  UnsignedInteger -> UInt16
+  UnsignedInteger -> UInt2X
+  UnsignedInteger -> UInt32
+  UnsignedInteger -> UInt64
+  UnsignedInteger -> UInt8
+  UnsignedNumeric -> UnsignedInteger
+}
