@@ -62,8 +62,91 @@ As you see most types are Swift built-ins and the new PONS acts as an add-on.  N
 
 This is what PONS was.  Virtually all necessary protocols and types were custom-made.
 
-PONS was also too monolithic, which was ironical because the best part of the protocol-oriented programming was modularization, or distribution of labor.  Thanks to Swift Package Manager PONS is modular.  `BigInt`, for instance, is fetched from [attaswift/BigInt].  PONS is now an aggregator module that aggregates the following:
-
-PONS was also too monolithic, which was ironical because the best part of the protocol-oriented programming was modularization, or distribution of labor.  Thanks to Swift Package Manager PONS is modular.  `BigInt`, for instance, is fetched from [attaswift/BigInt].  PONS is now an aggregator module that aggregates the following:
-
 [attaswift/BigInt]: https://github.com/attaswift/BigInt
+
+PONS was also too monolithic, which was ironical because the best part of the protocol-oriented programming was modularization, or distribution of labor.  Thanks to Swift Package Manager PONS is modular.  `BigInt`, for instance, is fetched from [attaswift/BigInt].  PONS is now an aggregator module that currently binds the following:
+
+* [BigInt]: arbitrary-precision integer
+* [BigNum]: arbitrary-precision floating-point (`BigRat` and `BigFloat`
+* [Int2X]: Double-width integers that is recursively built as `typealias Int128 = Int2X<UInt64>`
+* [Interval]: Interval arithmetic. `Interval<FloatingPioint>` is also `<FloatingPoint>` so interval arithmetic is easier than ever.
+* [Complex]: Complex numbers.  Any `FloatingPoint` can be its `.real` and `.imag`.  To avoid misuse, complex integers are named `GaussianInt`.
+
+
+[BigInt]: https://github.com/attaswift/BigInt
+[BigNum]: https://github.com/dankogai/swift-bignum
+[Int2X]: https://github.com/dankogai/swift-int2x
+[Interval]: https://github.com/dankogai/swift-interval
+[Complex]: https://github.com/dankogai/swift-complex
+
+## Usage
+
+### build
+
+```sh
+$ git clone https://github.com/dankogai/swift-complex.git
+$ cd swift-complex # the following assumes your $PWD is here
+$ swift build
+```
+
+### REPL
+
+Simply
+
+```sh
+$ scripts/run-repl.sh
+```
+
+or
+
+```sh
+$ swift build && swift -I.build/debug -L.build/debug -lComplex
+
+```
+
+and in your repl,
+
+```sh
+Welcome to Apple Swift version 4.1 (swiftlang-902.0.48 clang-902.0.39.1). Type :help for assistance.
+  1> import PONS
+```
+
+### Xcode
+
+Xcode project is deliberately excluded from the repository because it should be generated via `swift package generate-xcodeproj` . For convenience, you can
+
+```
+$ scripts/prep-xcode
+```
+
+And the Workspace opens up for you with Playground on top.  The playground is written as a manual.
+
+### From Your SwiftPM-Managed Projects
+
+Add the following to the `dependencies` section:
+
+```swift
+.package(
+  url: "https://github.com/dankogai/swift-pons.git", .branch("master")
+)
+```
+
+and the following to the `.target` argument:
+
+```swift
+.target(
+  name: "YourSwiftyPackage",
+  dependencies: ["PONS"])
+```
+
+Now all you have to do is:
+
+```swift
+import Complex
+```
+
+in your code.  Enjoy!
+
+### Prerequisite
+
+Swift 4.1 or better, OS X or Linux to build.
