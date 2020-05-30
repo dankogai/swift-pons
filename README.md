@@ -1,4 +1,4 @@
-[![Swift 4.1](https://img.shields.io/badge/swift-4.1-brightgreen.svg)](https://swift.org)
+[![Swift 5](https://img.shields.io/badge/swift-5-brightgreen.svg)](https://swift.org)
 [![MIT LiCENSE](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE)
 [![build status](https://secure.travis-ci.org/dankogai/swift-pons.png)](http://travis-ci.org/dankogai/swift-pons)
 
@@ -84,8 +84,8 @@ PONS was also too monolithic, which was ironical because the best part of the pr
 ### build
 
 ```sh
-$ git clone https://github.com/dankogai/swift-complex.git
-$ cd swift-complex # the following assumes your $PWD is here
+$ git clone https://github.com/dankogai/swift-pons.git
+$ cd swift-pons # the following assumes your $PWD is here
 $ swift build
 ```
 
@@ -100,7 +100,7 @@ $ scripts/run-repl.sh
 or
 
 ```sh
-$ swift build && swift -I.build/debug -L.build/debug -lComplex
+$ swift run --repl
 
 ```
 
@@ -142,11 +142,11 @@ and the following to the `.target` argument:
 Now all you have to do is:
 
 ```swift
-import Complex
+import PONS
 ```
 
 in your code.  Enjoy!
 
 ### Prerequisite
 
-Swift 4.1 or better, OS X or Linux to build.
+Swift 5 or better, OS X or Linux to build.
