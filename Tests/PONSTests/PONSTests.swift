@@ -1,16 +1,15 @@
-import XCTest
+import Testing
 @testable import PONS
 
-final class PONSTests: XCTestCase {
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        // XCTAssertEqual(PONS().text, "Hello, World!")
+@Suite struct ComplexBigNumTests {
+    @Test func sqrtOfComplexBigRat() {
+        let z = BigRat(42) + BigRat(42).i
+        let r = Complex.sqrt(z)
+        #expect((r * r - z).abs < BigRat(sign:.plus, exponent:-100, significand:1))
     }
-
-
-    static var allTests = [
-        ("testExample", testExample),
-    ]
+    @Test func sqrtOfComplexBigFloat() {
+        let z = BigFloat(42) + BigFloat(42).i
+        let r = Complex.sqrt(z)
+        #expect((r * r - z).abs < BigFloat(sign:.plus, exponent:-100, significand:1))
+    }
 }
