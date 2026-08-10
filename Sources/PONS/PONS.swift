@@ -13,6 +13,9 @@
 extension BigRat:   @retroactive RMath {}
 extension BigFloat: @retroactive RMath {}
 
+// `**` is declared in Exponentiation.swift, by this module.  Do not import
+// BigNumOperators or ComplexOperators alongside PONS: their duplicate
+// operator declarations would make every `**` use site ambiguous.
 
 // placeholder
 public class PONS {}
