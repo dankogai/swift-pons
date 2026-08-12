@@ -194,7 +194,7 @@ extension Int2X:    @retroactive FixedWidthRationalElement {}
 
 `BigRat` and `BigFloat` already speak `RMath` natively -- the protocol was designed around their vocabulary, `precision:` arguments included -- so conforming them makes `Complex<BigRat>` and `Complex<BigFloat>` full `CMath` citizens.  Likewise `Int2X` is already a `FixedWidthInteger`, so one empty conformance buys `Int1024(1).over(7)`.
 
-(The pre-SwiftPM versions of these graphs, in graphviz form, remain under [graph/](graph/) for the archeologically inclined.)
+If your markdown renderer does not speak mermaid, the same graph is pre-rendered as [graph/typetree.svg](graph/typetree.svg), from the extracted source [graph/typetree.mmd](graph/typetree.mmd).  (The pre-SwiftPM versions, in graphviz form, remain under [graph/](graph/) for the archeologically inclined.)
 
 ## The `**` Operator
 

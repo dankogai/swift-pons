@@ -1,0 +1,114 @@
+graph TD
+  classDef stdlib   fill:#8a8a8a,stroke:none,color:#fff
+  classDef bignum   fill:#0066cc,stroke:none,color:#fff
+  classDef complex  fill:#cc3300,stroke:none,color:#fff
+  classDef int2x    fill:#8800cc,stroke:none,color:#fff
+  classDef ponsglue fill:#00aa44,stroke:none,color:#fff
+
+  %% Swift Standard Library
+  Numeric(Numeric):::stdlib
+  SignedNumeric(SignedNumeric):::stdlib
+  BinaryInteger(BinaryInteger):::stdlib
+  SignedInteger(SignedInteger):::stdlib
+  UnsignedInteger(UnsignedInteger):::stdlib
+  FixedWidthInteger(FixedWidthInteger):::stdlib
+  FloatingPoint(FloatingPoint):::stdlib
+  BinaryFloatingPoint(BinaryFloatingPoint):::stdlib
+  Double[Double]:::stdlib
+  Float[Float]:::stdlib
+
+  Numeric --> SignedNumeric
+  Numeric --> BinaryInteger
+  BinaryInteger --> FixedWidthInteger
+  BinaryInteger --> SignedInteger
+  BinaryInteger --> UnsignedInteger
+  SignedNumeric --> SignedInteger
+  SignedNumeric --> FloatingPoint
+  FloatingPoint --> BinaryFloatingPoint
+  BinaryFloatingPoint --> Double
+  BinaryFloatingPoint --> Float
+
+  %% BigNum
+  ElementaryFunctions(ElementaryFunctions):::bignum
+  RealFunctions(RealFunctions):::bignum
+  AlgebraicField(AlgebraicField):::bignum
+  Real(Real):::bignum
+  BigFloatingPoint(BigFloatingPoint):::bignum
+  BigIntegerType(BigIntegerType):::bignum
+  BigIntType(BigIntType):::bignum
+  BigUIntType(BigUIntType):::bignum
+  RationalElement(RationalElement):::bignum
+  FixedWidthRationalElement(FixedWidthRationalElement):::bignum
+  RationalType(RationalType):::bignum
+  BigRationalType(BigRationalType):::bignum
+  BigUInt[BigUInt]:::bignum
+  BigInt[BigInt]:::bignum
+  Rational["Rational&lt;I&gt;"]:::bignum
+  BigRat[BigRat]:::bignum
+  BigFloat[BigFloat]:::bignum
+
+  ElementaryFunctions --> RealFunctions
+  SignedNumeric --> AlgebraicField
+  FloatingPoint --> Real
+  RealFunctions --> Real
+  AlgebraicField --> Real
+  Real --> BigFloatingPoint
+  Real --> Double
+  BinaryInteger --> BigIntegerType
+  BigIntegerType --> BigIntType
+  SignedInteger --> BigIntType
+  BigIntegerType --> BigUIntType
+  UnsignedInteger --> BigUIntType
+  BigIntType --> BigInt
+  BigUIntType --> BigUInt
+  SignedInteger --> RationalElement
+  RationalElement --> FixedWidthRationalElement
+  FixedWidthInteger --> FixedWidthRationalElement
+  RationalElement --> BigInt
+  FloatingPoint --> RationalType
+  RationalType --> BigRationalType
+  BigFloatingPoint --> BigRationalType
+  RationalType --> Rational
+  BigRationalType --> BigRat
+  BigFloatingPoint --> BigFloat
+
+  %% Complex
+  ComplexNumeric(ComplexNumeric):::complex
+  ComplexFloat(ComplexFloat):::complex
+  CMath(CMath):::complex
+  ComplexInt(ComplexInt):::complex
+  RMath(RMath):::complex
+  RMathViaDouble(RMathViaDouble):::complex
+  Complex["Complex&lt;R&gt;"]:::complex
+  GaussianInt["GaussianInt&lt;I&gt;"]:::complex
+
+  ComplexNumeric --> ComplexFloat
+  ComplexNumeric --> ComplexInt
+  ComplexFloat --> CMath
+  FloatingPoint --> RMath
+  RMath --> RMathViaDouble
+  RMathViaDouble --> Double
+  RMathViaDouble --> Float
+  RMath -. "Element" .-> CMath
+  ComplexFloat --> Complex
+  CMath -. "where R:RMath" .-> Complex
+  ComplexInt --> GaussianInt
+  SignedInteger -. "Element" .-> GaussianInt
+
+  %% Int2X
+  UInt2X["UInt2X&lt;W&gt;"]:::int2x
+  Int2X["Int2X&lt;W&gt;"]:::int2x
+  FixedWidthInteger --> UInt2X
+  UnsignedInteger --> UInt2X
+  FixedWidthInteger --> Int2X
+  SignedInteger --> Int2X
+  UInt2X --> Int2X
+  UInt2X --> UInt2X
+
+  %% PONS retroactive glue
+  RMath ==> BigRat
+  RMath ==> BigFloat
+  RationalElement ==> Int2X
+  FixedWidthRationalElement ==> Int2X
+
+  linkStyle 52,53,54,55 stroke:#00aa44,stroke-width:3px
