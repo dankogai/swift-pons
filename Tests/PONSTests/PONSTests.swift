@@ -14,6 +14,14 @@ import Testing
     }
 }
 
+@Suite struct Int2XRationalTests {
+    @Test func fixedWidthRational() {
+        let q = Int1024(1).over(7)
+        #expect(q + Int1024(2).over(7) == Int1024(3).over(7))
+        #expect(Int128(355).over(113).toDouble() == 355.0/113.0)
+    }
+}
+
 @Suite struct ExponentiationTests {
     @Test func integerPower() {
         #expect(2 ** 10 == 1024)
