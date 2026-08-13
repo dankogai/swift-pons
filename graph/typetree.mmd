@@ -2,6 +2,7 @@ graph TD
   classDef stdlib   fill:#8a8a8a,stroke:none,color:#fff
   classDef bignum   fill:#0066cc,stroke:none,color:#fff
   classDef complex  fill:#cc3300,stroke:none,color:#fff
+  classDef interval fill:#008888,stroke:none,color:#fff
   classDef int2x    fill:#8800cc,stroke:none,color:#fff
   classDef ponsglue fill:#00aa44,stroke:none,color:#fff
 
@@ -95,6 +96,13 @@ graph TD
   ComplexInt --> GaussianInt
   SignedInteger -. "Element" .-> GaussianInt
 
+  %% Interval
+  IntervalElement(IntervalElement):::interval
+  Interval["Interval&lt;F&gt;"]:::interval
+  FloatingPoint --> IntervalElement
+  IntervalElement --> Double
+  IntervalElement -. "F" .-> Interval
+
   %% Int2X
   UInt2X["UInt2X&lt;W&gt;"]:::int2x
   Int2X["Int2X&lt;W&gt;"]:::int2x
@@ -110,5 +118,7 @@ graph TD
   RMath ==> BigFloat
   RationalElement ==> Int2X
   FixedWidthRationalElement ==> Int2X
+  IntervalElement ==> BigRat
+  IntervalElement ==> BigFloat
 
-  linkStyle 52,53,54,55 stroke:#00aa44,stroke-width:3px
+  linkStyle 55,56,57,58,59,60 stroke:#00aa44,stroke-width:3px

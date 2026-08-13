@@ -14,7 +14,7 @@ let package = Package(
     dependencies: [
       .package(url: "https://github.com/dankogai/swift-bignum.git", branch: "main"),
       .package(url: "https://github.com/dankogai/swift-complex.git", branch: "main"),
-//      .package(url: "https://github.com/dankogai/swift-interval.git", branch: "master"),
+      .package(url: "https://github.com/dankogai/swift-interval.git", branch: "main"),
       .package(url: "https://github.com/dankogai/swift-int2x.git", branch: "main"),
     ],
     targets: [
@@ -23,6 +23,7 @@ let package = Package(
             dependencies: [
                 .product(name: "BigNum", package: "swift-bignum"),
                 .product(name: "Complex", package: "swift-complex"),
+                .product(name: "Interval", package: "swift-interval"),
                 .product(name: "Int2X", package: "swift-int2x")
             ]),
         .executableTarget(

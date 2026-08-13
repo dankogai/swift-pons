@@ -8,8 +8,7 @@
 @_exported import BigNum
 @_exported import Complex
 @_exported import Int2X
-// @_exported import Interval
-// import just a protocol
+@_exported import Interval
 
 
 // BigRat and BigFloat become Complex-ready elements here, where both
@@ -28,6 +27,13 @@ extension BigFloat: @retroactive RMath {}
 // to a derived protocol does not imply the inherited one for generic types.
 extension Int2X: @retroactive RationalElement {}
 extension Int2X: @retroactive FixedWidthRationalElement {}
+
+// Interval elements, likewise: IntervalElement speaks swift-bignum's
+// vocabulary (expMinusOne, log(onePlus:), root, erf & co.), so BigRat and
+// BigFloat conform empty-handed, and `BigFloat(1) ± BigFloat(1)/1024`
+// just works.  Double conforms in swift-interval itself.
+extension BigRat:   @retroactive IntervalElement {}
+extension BigFloat: @retroactive IntervalElement {}
 
 // `**` is declared in Exponentiation.swift, by this module.  Do not import
 // BigNumOperators or ComplexOperators alongside PONS: their duplicate

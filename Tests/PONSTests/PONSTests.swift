@@ -22,6 +22,22 @@ import Testing
     }
 }
 
+@Suite struct IntervalTests {
+    @Test func plusMinus() {
+        let iv = BigRat(1) ± BigRat(1, 8)
+        #expect(iv.min == BigRat(7, 8))
+        #expect(iv.max == BigRat(9, 8))
+        let dv = 1.0 ± 0.5
+        #expect(dv.min == 0.5 && dv.max == 1.5)
+    }
+    @Test func intervalMath() {
+        // the interval result must bracket the point result
+        let root2 = BigFloat.sqrt(BigFloat(2))
+        let iv = Interval.sqrt(BigFloat(2) ± BigFloat(2) ** -100)
+        #expect(iv.min < root2 && root2 < iv.max)
+    }
+}
+
 @Suite struct ExponentiationTests {
     @Test func integerPower() {
         #expect(2 ** 10 == 1024)
