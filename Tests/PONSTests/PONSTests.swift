@@ -36,6 +36,14 @@ import Testing
         let iv = Interval.sqrt(BigFloat(2) ± BigFloat(2) ** -100)
         #expect(iv.min < root2 && root2 < iv.max)
     }
+    @Test func complexOverInterval() {
+        // Interval is an RMath, so Complex<Interval<BigRat>> is a CMath:
+        // complex arithmetic whose parts carry brackets
+        let iv = BigRat(0) ± BigRat(1, 1024)
+        let e = Complex.exp(Complex(iv, iv))
+        #expect(e.real.min < 1 && 1 <= e.real.max)  // e^0 cos 0 == 1
+        #expect(e.imag.min < 0 && 0 < e.imag.max)   // e^0 sin 0 == 0
+    }
 }
 
 @Suite struct ExponentiationTests {
