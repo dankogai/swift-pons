@@ -22,6 +22,8 @@ let pi = BigFloat.PI(precision: 128)
 let cf = Complex.exp(pi.i)                  // Complex<BigFloat>: e^(πi) == -1
 BigInt(2) ** 256                            // exponentiation, exact
 1.0.i ** 2                                  // exactly -1 + 0i: no pow() round trip
+BigFloat(1) ± BigFloat(2) ** -10            // Interval<BigFloat>
+Interval.sqrt(2.0 ± 0.001)                  // brackets sqrt(2), guaranteed
 // and more!
 ```
 
@@ -54,13 +56,15 @@ and so forth.  So they were restored -- this time on top of the Swift Standard L
 
 * [BigNum]: arbitrary-precision arithmetic -- `BigInt`, `BigUInt`, `BigRat` and `BigFloat`, with math functions that take a `precision:` argument
 * [Complex]: complex numbers.  Any `FloatingPoint` can be its `.real` and `.imag`; elements conforming to `RMath` get the math functions, at their native precision.  To avoid misuse, complex integers are named `GaussianInt`.
+* [Interval]: interval arithmetic.  `1.0 ± 0.5` is an `Interval<Double>`, and the math functions return intervals guaranteed to bracket the true result.
 * [Int2X]: double-width integers, recursively built as `typealias Int128 = Int2X<UInt64>` all the way up to `Int1024`
 
 [BigNum]: https://github.com/dankogai/swift-bignum
 [Complex]: https://github.com/dankogai/swift-complex
+[Interval]: https://github.com/dankogai/swift-interval
 [Int2X]: https://github.com/dankogai/swift-int2x
 
-PONS itself stays thin: it re-exports the modules above, declares the retroactive conformances that make them play together -- `BigRat` and `BigFloat` as `Complex` elements, `Int2X` as a `Rational` element -- and owns the `**` operator, declared exactly once so the packages' own operator modules never collide.
+PONS itself stays thin: it re-exports the modules above, declares the retroactive conformances that make them play together -- `BigRat` and `BigFloat` as `Complex` and `Interval` elements, `Int2X` as a `Rational` element -- and owns the `**` operator, declared exactly once so the packages' own operator modules never collide.  (`±` comes from Interval itself, whose declaration nothing else duplicates.)
 
 ## The Type Tree
 
@@ -71,6 +75,7 @@ graph TD
   classDef stdlib   fill:#8a8a8a,stroke:none,color:#fff
   classDef bignum   fill:#0066cc,stroke:none,color:#fff
   classDef complex  fill:#cc3300,stroke:none,color:#fff
+  classDef interval fill:#008888,stroke:none,color:#fff
   classDef int2x    fill:#8800cc,stroke:none,color:#fff
   classDef ponsglue fill:#00aa44,stroke:none,color:#fff
 
@@ -164,6 +169,13 @@ graph TD
   ComplexInt --> GaussianInt
   SignedInteger -. "Element" .-> GaussianInt
 
+  %% Interval
+  IntervalElement(IntervalElement):::interval
+  Interval["Interval&lt;F&gt;"]:::interval
+  FloatingPoint --> IntervalElement
+  IntervalElement --> Double
+  IntervalElement -. "F" .-> Interval
+
   %% Int2X
   UInt2X["UInt2X&lt;W&gt;"]:::int2x
   Int2X["Int2X&lt;W&gt;"]:::int2x
@@ -179,8 +191,10 @@ graph TD
   RMath ==> BigFloat
   RationalElement ==> Int2X
   FixedWidthRationalElement ==> Int2X
+  IntervalElement ==> BigRat
+  IntervalElement ==> BigFloat
 
-  linkStyle 52,53,54,55 stroke:#00aa44,stroke-width:3px
+  linkStyle 55,56,57,58,59,60 stroke:#00aa44,stroke-width:3px
 ```
 
 The green edges are declared in PONS, and they are all one-liners:
@@ -190,6 +204,8 @@ extension BigRat:   @retroactive RMath {}
 extension BigFloat: @retroactive RMath {}
 extension Int2X:    @retroactive RationalElement {}
 extension Int2X:    @retroactive FixedWidthRationalElement {}
+extension BigRat:   @retroactive IntervalElement {}
+extension BigFloat: @retroactive IntervalElement {}
 ```
 
 `BigRat` and `BigFloat` already speak `RMath` natively -- the protocol was designed around their vocabulary, `precision:` arguments included -- so conforming them makes `Complex<BigRat>` and `Complex<BigFloat>` full `CMath` citizens.  Likewise `Int2X` is already a `FixedWidthInteger`, so one empty conformance buys `Int1024(1).over(7)`.
