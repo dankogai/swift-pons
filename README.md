@@ -259,7 +259,7 @@ $R0: BigFloat = ...
 Add the following to the `dependencies` section of `Package.swift`:
 
 ```swift
-.package(url: "https://github.com/dankogai/swift-pons.git", branch: "main")
+.package(url: "https://github.com/dankogai/swift-pons.git", from: "6.0.0")
 ```
 
 and the following to the dependencies of your target:
