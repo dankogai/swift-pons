@@ -1,2 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<playground version='6.0' target-platform='macos' display-mode='raw'/>
+<playground version='6.0' target-platform='macos' display-mode='raw'>
+    <pages>
+        <page name='Synopsis'/>
+        <page name='BigNum'/>
+        <page name='Complex'/>
+        <page name='Interval'/>
+        <page name='Int2X'/>
+        <page name='Generic Programming'/>
+    </pages>
+</playground>
