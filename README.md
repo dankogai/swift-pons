@@ -193,11 +193,12 @@ graph TD
   FixedWidthRationalElement ==> Int2X
   IntervalElement ==> BigRat
   IntervalElement ==> BigFloat
+  RMath ==> Interval
 
-  linkStyle 55,56,57,58,59,60 stroke:#00aa44,stroke-width:3px
+  linkStyle 55,56,57,58,59,60,61 stroke:#00aa44,stroke-width:3px
 ```
 
-The green edges are declared in PONS, and they are all one-liners:
+The green edges are declared in PONS, and all but the last are empty one-liners:
 
 ```swift
 extension BigRat:   @retroactive RMath {}
@@ -206,7 +207,10 @@ extension Int2X:    @retroactive RationalElement {}
 extension Int2X:    @retroactive FixedWidthRationalElement {}
 extension BigRat:   @retroactive IntervalElement {}
 extension BigFloat: @retroactive IntervalElement {}
+extension Interval: @retroactive RMath where F: RMath { /* spelling bridges */ }
 ```
+
+That last one makes `Complex<Interval<BigRat>>` a full `CMath` citizen -- complex arithmetic whose real and imaginary parts carry guaranteed brackets.
 
 `BigRat` and `BigFloat` already speak `RMath` natively -- the protocol was designed around their vocabulary, `precision:` arguments included -- so conforming them makes `Complex<BigRat>` and `Complex<BigFloat>` full `CMath` citizens.  Likewise `Int2X` is already a `FixedWidthInteger`, so one empty conformance buys `Int1024(1).over(7)`.
 
