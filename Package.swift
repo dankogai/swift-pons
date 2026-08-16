@@ -12,9 +12,9 @@ let package = Package(
             targets: ["PONS"]),
     ],
     dependencies: [
-      .package(url: "https://github.com/dankogai/swift-bignum.git", from: "6.3.1"),
-      .package(url: "https://github.com/dankogai/swift-complex.git", from: "6.3.0"),
-      .package(url: "https://github.com/dankogai/swift-interval.git", from: "6.0.1"),
+      .package(url: "https://github.com/dankogai/swift-bignum.git", from: "6.3.3"),
+      .package(url: "https://github.com/dankogai/swift-complex.git", from: "6.3.1"),
+      .package(url: "https://github.com/dankogai/swift-interval.git", from: "6.0.2"),
       .package(url: "https://github.com/dankogai/swift-int2x.git", from: "0.4.2"),
     ],
     targets: [
